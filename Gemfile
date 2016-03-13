@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.1.4'
 gem 'json', '1.8.3'
+gem 'thin'
 
 ### OpenShift Online changes:
 
@@ -59,7 +60,6 @@ gem 'jbuilder', '~> 2.0'
 
 # Use unicorn as the app server
 # gem 'unicorn'
-gem 'thin'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
