@@ -1,0 +1,76 @@
+<div id="map" style="height: 100vh"></div> 
+
+<script>
+
+    var googleMapsApiLoaded = false;
+    
+    new Promise(function(resolve, reject) {
+        if (navigator.geolocation) {
+            var options = {
+                enableHighAccuracy: true,
+                maximumAge: 0
+            };
+            navigator.geolocation.getCurrentPosition(function(position) {
+                resolve(position);
+            }, function(error) {
+                reject(error.code);
+            },options);
+        } else {
+            reject(null); // Something other than null should be used.
+        }
+    }).then(function(position) {
+        return new Promise(function(resolve, reject) {
+            if (!googleMapsApiLoaded) { // Javascript only excutes single-threaded, so this works without race conditions.
+                window['onGoogleMapsApiLoad'] = function() {
+                    googleMapsApiLoaded = true;
+                    resolve(position);
+                }
+            } else {
+                resolve(position);
+            }
+        });
+    }).then(function(position) {
+        console.log(position);
+        var lat = position.coords.latitude;
+        var long = position.coords.longitude;
+        var accuracy = position.coords.accuracy;
+        
+        console.log(lat);
+        console.log(long);
+        console.log(accuracy);
+        
+        window['map'] = new google.maps.Map(document.getElementById('map'), {
+           center: {lat: lat, lng: long},
+           zoom: 14
+        });
+        
+        new google.maps.Marker({
+            map: window['map'],
+            position: {lat: lat, lng: long},
+            title: "Your position",
+            label: 'P'
+        });
+        
+        new google.maps.Circle({
+            strokeColor: '#0000FF',
+            strokeOpacity: 0.5,
+            strokeWeight: 2,
+            fillColor: '#0000FF',
+            fillOpacity: 0.2,
+            map: map,
+            center: {lat: lat, lng: long},
+            radius: accuracy
+        });
+        
+    })
+    
+    var apiKey = "AIzaSyCKoHy8kXXlkzOM0nZOeW-X-L1QqUa-k3Q";
+    
+    function onGoogleMapsApiLoad() {
+        googleMapsApiLoaded = true;
+    }
+    
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCKoHy8kXXlkzOM0nZOeW-X-L1QqUa-k3Q&callback=onGoogleMapsApiLoad"
+    async defer></script>

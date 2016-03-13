@@ -32,6 +32,10 @@ group :production, :postgresql do
   gem 'pg'
 end
 
+group :development do
+  gem 'quiet_assets'
+end
+
 ### / OpenShift changes
 
 # Use SCSS for stylesheets
