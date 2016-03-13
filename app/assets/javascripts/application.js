@@ -12,7 +12,6 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require turbolinks
 //= require_tree .
 
 // Taken from http://bootsnipp.com/snippets/Oe5XM
@@ -168,10 +167,13 @@ function addSelfPosition(markerOptions, circleOptions) {
         radius: accuracy
     }, circleOptions));
     
+    window['positionCircle'] = circle;
+    
     return {marker: marker, circle: circle};
 }
 
 function makeRealTime() {
+    console.log("making real time!");
     function updatePosition() {
         new Promise(function(resolve, reject) {
             if (navigator.geolocation) {
@@ -188,9 +190,41 @@ function makeRealTime() {
                 reject(null); // Something other than null should be used.
             }
         }).then(function(position) {
-            window['positionMarker'].setPosition({lat: position.coords.latitude, lng: position.coords.longitude});
+            function ease(a, b, t) {
+                var mt = (t < 0.5) ? (t*t) * 2 : 1 - ((1-t)*(1-t)*2);
+                return (b-a) * mt + a;
+            }
+            var startPosition = window['positionMarker'].getPosition()
+            var startRadius = window['positionCircle'].getRadius();
+            var startTime = new Date().getTime();
+            var animationTime = 350;
+            
+            function update(t) {
+                var lat = ease(startPosition.lat(), position.coords.latitude, t);
+                var lng = ease(startPosition.lng(), position.coords.longitude, t);
+                var accuracy = ease(startRadius, position.coords.accuracy, t);
+                window['positionMarker'].setPosition({lat: lat, lng: lng});
+                window['positionCircle'].setCenter({lat: lat, lng: lng});
+                window['positionCircle'].setRadius(accuracy);
+                
+            }
+            
+            return new Promise(function(resolve, reject) {
+                var timer = function() {
+                    var currentTime = new Date().getTime();
+                    if (startTime + animationTime < currentTime) {
+                        update(1);
+                        resolve(null);
+                    } else {
+                        update((currentTime - startTime) / animationTime);
+                        setTimeout(timer, 30);
+                    }
+                }
+                setTimeout(timer, 30);
+            });
+        }).then(function() {
             setTimeout(updatePosition, 1000);
-        });
+        })
     }
     
     setTimeout(updatePosition, 1000);

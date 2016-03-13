@@ -2,8 +2,8 @@
 <html>
 <head>
   <title>Rails4Example</title>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag    'application', media: 'all'%>
+  <%= javascript_include_tag 'application'%>
   <%= csrf_meta_tags %>
   
   <!-- Latest compiled and minified CSS -->
@@ -23,6 +23,19 @@
   <div style="height:50px; width:100%; z-index:1; position: absolute;">
     <div style="margin-left: auto; margin-right: auto; height:100%; width:100%; text-align: center;">
       <%= image_tag "logo.png", height: "100%" %>
+    </div>
+  </div>
+  <div style="height:44px; width:100%; z-index:1; position: absolute; top: 3px;">
+    <div style="margin-left: auto; margin-right: auto; height:44px; width:100%; text-align: right; padding-right: 3px;">
+      <% if @cancel %>
+        <a href="/">
+          <%= image_tag "cancel.png", height: "100%" %>
+        </a>
+      <% else %>
+        <a href="/add">
+          <%= image_tag "add.png", height: "100%" %>
+        </a>
+        <% end %>
     </div>
   </div>
   <div style="height:100%; width:100%;">

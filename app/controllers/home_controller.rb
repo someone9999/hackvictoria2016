@@ -7,6 +7,7 @@ class HomeController < ApplicationController
     end
     
     def add
+        @cancel = true
         load_racks
     end
     
