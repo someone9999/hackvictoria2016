@@ -2,13 +2,24 @@
     var racks = <%= raw @racksJson %>
 
     createMap().then(function() {
-        return addSelfPosition();
+        return addSelfPosition({
+            shape: {
+                type: "circle",
+                coords: [10, 10, 10]
+            },
+            icon: {
+                url: "/assets/dot.png",
+                anchor: {x: 10, y: 10}
+            },
+            label: ''
+        });
     }).then(function() {
         return addRacks(racks);
-    });
+    }).then(function() {
+        makeRealTime();
+        return null;
+    })
 </script>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCKoHy8kXXlkzOM0nZOeW-X-L1QqUa-k3Q&callback=onGoogleMapsApiLoad"
     async defer></script>
-    
-<div style="font-size: 10px; text-align: center">Attributation Parking graphic by <a href="http://www.freepik.com/">Freepik</a> from <a href="http://www.flaticon.com/">Flaticon</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>. Logo made with <a href="http://logomakr.com" title="Logo Maker">Logo Maker</a></div>

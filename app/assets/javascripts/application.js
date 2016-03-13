@@ -130,6 +130,9 @@ function createMap() {
         
         window['map'] = new google.maps.Map(document.getElementById('map'), {
            center: {lat: lat, lng: long},
+           mapTypeControlOptions: {
+               position: google.maps.ControlPosition.LEFT_BOTTOM
+           },
            zoom: 14
         });
     });
@@ -151,6 +154,8 @@ function addSelfPosition(markerOptions, circleOptions) {
         label: 'P'
     }, markerOptions));
     
+    window['positionMarker'] = marker;
+    
     
     var circle = new google.maps.Circle(merge({
         strokeColor: '#0000FF',
@@ -164,6 +169,31 @@ function addSelfPosition(markerOptions, circleOptions) {
     }, circleOptions));
     
     return {marker: marker, circle: circle};
+}
+
+function makeRealTime() {
+    function updatePosition() {
+        new Promise(function(resolve, reject) {
+            if (navigator.geolocation) {
+                var options = {
+                    enableHighAccuracy: true,
+                    maximumAge: 0
+                };
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    resolve(position);
+                }, function(error) {
+                    reject(error.code);
+                },options);
+            } else {
+                reject(null); // Something other than null should be used.
+            }
+        }).then(function(position) {
+            window['positionMarker'].setPosition({lat: position.coords.latitude, lng: position.coords.longitude});
+            setTimeout(updatePosition, 1000);
+        });
+    }
+    
+    setTimeout(updatePosition, 1000);
 }
 
 function addRacks(racks) {
