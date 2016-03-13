@@ -243,3 +243,7 @@ function addRacks(racks) {
 function onGoogleMapsApiLoad() {
     googleMapsApiLoaded = true;
 }
+
+$("#search").submit(function(evt) {
+    evt.preventDefault();
+});

@@ -18,7 +18,36 @@
     }).then(function() {
         makeRealTime();
         return null;
+    }).then(function() {
+        var geocoder = new google.maps.Geocoder();
+        
+        window['searchCallback'] = function() {
+            console.log("GEOCODING");
+            var value = $("#searchbox").val();
+            console.log("Searching for " + value);
+            geocoder.geocode( { 'address': value}, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    map.panTo(results[0].geometry.location);
+                    
+                    if (window['searchMarker']) {
+                        window['searchMarker'].setPosition(results[0]);
+                    } else {
+                        window['searchMarker'] = new google.maps.Marker({
+                            icon: {
+                                url: "/assets/search.png",
+                                anchor: {x:11, y:12}
+                            },
+                            map: map,
+                            position: results[0].geometry.location
+                        });
+                    }
+                    } else {
+                    console.log("Geocode was not successful for the following reason: " + status);
+                }
+            });
+        };
     })
+    
 </script>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCKoHy8kXXlkzOM0nZOeW-X-L1QqUa-k3Q&callback=onGoogleMapsApiLoad"

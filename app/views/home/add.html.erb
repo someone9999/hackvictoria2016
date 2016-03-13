@@ -35,7 +35,7 @@
                 if (req.readyState === 4) {
                     if (req.status === 200) {
                         waitingDialog.hide();
-                        location.reload();
+                        location = "/";
                     } else {
                         console.log("Should show error"); //TODO error handling.
                     }
@@ -49,10 +49,24 @@
             req.setRequestHeader("Content-Type", "application/json");
             req.send(JSON.stringify({lat: markerPosition.lat(), long: markerPosition.lng()})); // Could probably use jQuery for this.
         });
+    
+        var geocoder = new google.maps.Geocoder();
+        
+        window['searchCallback'] = function() {
+            console.log("GEOCODING");
+            var value = $("#searchbox").val();
+            console.log("Searching for " + value);
+            geocoder.geocode( { 'address': value}, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    map.panTo(results[0].geometry.location);
+                    updateMarker({latLng: results[0].geometry.location});
+                }
+            });
+        };
     }).then(function() {
         addRacks(racks);
+    }).then(function() {
     });
-    
 </script>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCKoHy8kXXlkzOM0nZOeW-X-L1QqUa-k3Q&callback=onGoogleMapsApiLoad"
