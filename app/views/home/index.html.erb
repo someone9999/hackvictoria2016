@@ -1,76 +1,20 @@
-<div id="map" style="height: 100vh"></div> 
+<div style="position: absolute; left:0, top: 0">
+    <%= image_tag "logo.png" %>
+</div>
+
+<div id="map" style="height: calc(100vh - 15px)"></div> 
 
 <script>
+    var racks = <%= raw @racksJson %>
 
-    var googleMapsApiLoaded = false;
-    
-    new Promise(function(resolve, reject) {
-        if (navigator.geolocation) {
-            var options = {
-                enableHighAccuracy: true,
-                maximumAge: 0
-            };
-            navigator.geolocation.getCurrentPosition(function(position) {
-                resolve(position);
-            }, function(error) {
-                reject(error.code);
-            },options);
-        } else {
-            reject(null); // Something other than null should be used.
-        }
-    }).then(function(position) {
-        return new Promise(function(resolve, reject) {
-            if (!googleMapsApiLoaded) { // Javascript only excutes single-threaded, so this works without race conditions.
-                window['onGoogleMapsApiLoad'] = function() {
-                    googleMapsApiLoaded = true;
-                    resolve(position);
-                }
-            } else {
-                resolve(position);
-            }
-        });
-    }).then(function(position) {
-        console.log(position);
-        var lat = position.coords.latitude;
-        var long = position.coords.longitude;
-        var accuracy = position.coords.accuracy;
-        
-        console.log(lat);
-        console.log(long);
-        console.log(accuracy);
-        
-        window['map'] = new google.maps.Map(document.getElementById('map'), {
-           center: {lat: lat, lng: long},
-           zoom: 14
-        });
-        
-        new google.maps.Marker({
-            map: window['map'],
-            position: {lat: lat, lng: long},
-            title: "Your position",
-            label: 'P'
-        });
-        
-        new google.maps.Circle({
-            strokeColor: '#0000FF',
-            strokeOpacity: 0.5,
-            strokeWeight: 2,
-            fillColor: '#0000FF',
-            fillOpacity: 0.2,
-            map: map,
-            center: {lat: lat, lng: long},
-            radius: accuracy
-        });
-        
-    })
-    
-    var apiKey = "AIzaSyCKoHy8kXXlkzOM0nZOeW-X-L1QqUa-k3Q";
-    
-    function onGoogleMapsApiLoad() {
-        googleMapsApiLoaded = true;
-    }
-    
+    createMap().then(function() {
+        return addSelfPosition();
+    }).then(function() {
+        return addRacks(racks);
+    });
 </script>
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCKoHy8kXXlkzOM0nZOeW-X-L1QqUa-k3Q&callback=onGoogleMapsApiLoad"
     async defer></script>
+    
+<div style="font-size: 10px; text-align: center">Attributation Parking graphic by <a href="http://www.freepik.com/">Freepik</a> from <a href="http://www.flaticon.com/">Flaticon</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>. Logo made with <a href="http://logomakr.com" title="Logo Maker">Logo Maker</a></div>

@@ -1,0 +1,52 @@
+<div id="map" style="height: calc(100vh - 15px)"></div> 
+
+<script>
+
+    var googleMapsApiLoaded = false;
+    var marker = null;
+    
+    var racks = <%= raw @racksJson %>
+    
+    createMap().then(function() {
+        var updateMarker = function(evt) {
+            marker.setPosition(evt.latLng);
+            circle.setVisible(false);
+        }
+        var ret = addSelfPosition({label: '+'});
+        var marker = ret.marker;
+        var circle = ret.circle;
+        
+        window['map'].addListener('click', updateMarker);
+        circle.addListener('click', updateMarker);
+        
+        marker.addListener('click', function(evt) {
+            waitingDialog.show("Saving...");
+            var req = new XMLHttpRequest();
+            req.onreadystatechange = function() {
+                console.log(req.readyState + " " + req.status);
+                if (req.readyState === 4) {
+                    if (req.status === 200) {
+                        waitingDialog.hide();
+                    } else {
+                        console.log("Should show error"); //TODO error handling.
+                    }
+                }
+            }
+            
+            req.open("POST", "/save", true); //TODO Fix this with the proper way to get url in rails.
+            
+            
+            var markerPosition = marker.getPosition();
+            req.setRequestHeader("Content-Type", "application/json");
+            req.send(JSON.stringify({lat: markerPosition.lat(), long: markerPosition.lng()})); // Could probably use jQuery for this.
+        });
+    }).then(function() {
+        addRacks(racks);
+    });
+    
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCKoHy8kXXlkzOM0nZOeW-X-L1QqUa-k3Q&callback=onGoogleMapsApiLoad"
+    async defer></script>
+    
+<div style="font-size: 10px; text-align: center">Attributation Parking graphic by <a href="http://www.freepik.com/">Freepik</a> from <a href="http://www.flaticon.com/">Flaticon</a> is licensed under <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a>. Logo made with <a href="http://logomakr.com" title="Logo Maker">Logo Maker</a></div>
