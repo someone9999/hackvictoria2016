@@ -108,6 +108,14 @@ function createMap() {
         } else {
             reject(null); // Something other than null should be used.
         }
+    }).catch(function(err) {
+            return { 
+                coords: {
+                    longitude: -123.3138822,
+                    latitude: 48.4634067,
+                    accuracy: 2
+                }
+            };
     }).then(function(position) {
         return new Promise(function(resolve, reject) {
             if (!googleMapsApiLoaded) { // Javascript only excutes single-threaded, so this works without race conditions.
@@ -189,6 +197,14 @@ function makeRealTime() {
             } else {
                 reject(null); // Something other than null should be used.
             }
+        }).catch(function(err) {
+            return { 
+                coords: {
+                    longitude: -123.3138822,
+                    latitude: 48.4634067,
+                    accuracy: 2
+                }
+            };
         }).then(function(position) {
             function ease(a, b, t) {
                 var mt = (t < 0.5) ? (t*t) * 2 : 1 - ((1-t)*(1-t)*2);
@@ -243,7 +259,3 @@ function addRacks(racks) {
 function onGoogleMapsApiLoad() {
     googleMapsApiLoaded = true;
 }
-
-$("#search").submit(function(evt) {
-    evt.preventDefault();
-});
