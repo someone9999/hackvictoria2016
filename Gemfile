@@ -66,6 +66,3 @@ gem 'thin'
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
-
-gem 'turbo-sprockets-rails3'
-
