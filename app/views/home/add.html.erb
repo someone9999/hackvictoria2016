@@ -1,5 +1,3 @@
-<div id="map" style="height: calc(100vh - 15px)"></div> 
-
 <script>
 
     var googleMapsApiLoaded = false;
@@ -12,7 +10,17 @@
             marker.setPosition(evt.latLng);
             circle.setVisible(false);
         }
-        var ret = addSelfPosition({label: '+'});
+        var ret = addSelfPosition({
+            shape: {
+                type: "circle",
+                coords: [10, 10, 10]
+            },
+            icon: {
+                url: "/assets/plus.png",
+                anchor: {x: 10, y: 10}
+            },
+            label: ''
+        });
         var marker = ret.marker;
         var circle = ret.circle;
         

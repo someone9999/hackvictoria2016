@@ -20,7 +20,4 @@ ActiveRecord::Schema.define(version: 20160313032203) do
     t.datetime "updated_at"
   end
 
-# Could not dump table "bikeracks" because of following NoMethodError
-#   undefined method `[]' for nil:NilClass
-
 end

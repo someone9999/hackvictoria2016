@@ -18,6 +18,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
 </head>
 <body>
+
+<div id="logo" style="height:50px">
+    <%= image_tag "logo.png", height: "100%" %>
+</div>
+  
+<div id="map" style="height: calc(100vh - 65px)"></div> 
+
 <div class="modal hide" id="loadModal" data-backdrop="static" data-keyboard="false">
   <div class="modal-header">
     <h1>Processing...</h1>
