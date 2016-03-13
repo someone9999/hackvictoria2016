@@ -27,6 +27,7 @@
                 if (req.readyState === 4) {
                     if (req.status === 200) {
                         waitingDialog.hide();
+                        location.reload();
                     } else {
                         console.log("Should show error"); //TODO error handling.
                     }

@@ -11,8 +11,7 @@ class HomeController < ApplicationController
     end
     
     def save
-        puts params
-        puts params[:test]
+        (BikeRack.new(lat: params[:lat], long: params[:long])).save
         head 200
     end
     
